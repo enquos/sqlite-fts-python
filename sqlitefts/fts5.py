@@ -211,13 +211,13 @@ def make_fts5_tokenizer(tokenizer):
     def xtokenize(pTokenizer, pCtx, flags, pText, nText, xToken):
         tokenizer = ffi.from_handle(ffi.cast('void *', pTokenizer))
         text = ffi.string(pText[0:nText]).decode('utf-8')
-        for normalized, begin, end in tokenizer.tokenize(text, flags):
+        for normalized, begin, end, flags in tokenizer.tokenize(text, flags):
             normalized = normalized.encode('utf-8')
             if not normalized:
                 continue
 
             # TODO: Synonym Support
-            r = xToken(pCtx, 0,
+            r = xToken(pCtx, flags,
                        ffi.from_buffer(normalized), len(normalized), begin,
                        end)
             if r != SQLITE_OK:
